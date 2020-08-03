@@ -54,8 +54,7 @@ namespace Uls.Shigemaru
             services.AddSingleton<IStorage>(storage);
 
             // Create the Conversation state. (Used by the Dialog system itself.)
-            var conversationState = new ConversationState(storage);
-            services.AddSingleton<ConversationState>(conversationState);
+            services.AddSingleton<ConversationState>();
 
             // Create a global hashset for our ConversationReferences
             services.AddSingleton<ConcurrentDictionary<string, ConversationReference>>();

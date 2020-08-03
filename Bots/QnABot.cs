@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Bot.Builder.Azure;
@@ -20,16 +21,18 @@ namespace Uls.Shigemaru.Bots
 
         // Dependency injected dictionary for storing ConversationReference objects used in NotifyController to proactively message users
         protected readonly ConcurrentDictionary<string, ConversationReference> _conversationReferences;
-
         protected readonly IStorage _storage;
 
-        public QnABot(ConversationState conversationState, UserState userState, T dialog, ConcurrentDictionary<string, ConversationReference> conversationReferences, IStorage storage)
+        private string _greeting;
+
+        public QnABot(IConfiguration configuration,ConversationState conversationState, UserState userState, T dialog, ConcurrentDictionary<string, ConversationReference> conversationReferences, IStorage storage)
         {
             ConversationState = conversationState;
             UserState = userState;
             Dialog = dialog;
             _conversationReferences = conversationReferences;
             _storage = storage;
+            _greeting = configuration.GetValue<string>("GreetingValue");
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -148,7 +151,7 @@ namespace Uls.Shigemaru.Bots
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    await turnContext.SendActivityAsync(MessageFactory.Text($"こんにちわ、しげまるです！"), cancellationToken);
+                    await turnContext.SendActivityAsync(MessageFactory.Text(_greeting), cancellationToken);
                 }
             }
         }

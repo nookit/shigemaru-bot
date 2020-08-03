@@ -1,15 +1,19 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Bot.Schema;
+using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.BotBuilderSamples.Bots;
 using Microsoft.BotBuilderSamples.Dialog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QnABot;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -47,6 +51,24 @@ namespace Microsoft.BotBuilderSamples
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, QnABot<RootDialog>>();
+
+            string storageAccount = Configuration.GetValue<string>("StorageAccount");
+            string storageContainerName = Configuration.GetValue<string>("StorageContainerName");
+            AzureBlobStorage storage = new AzureBlobStorage(storageAccount, storageContainerName);
+            services.AddSingleton<IStorage>(storage);
+
+            // Create the Conversation state. (Used by the Dialog system itself.)
+            var conversationState = new ConversationState(storage);
+            services.AddSingleton<ConversationState>(conversationState);
+
+            // Create a global hashset for our ConversationReferences
+            services.AddSingleton<ConcurrentDictionary<string, ConversationReference>>();
+
+            // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
+            services.AddBot<QnABot<RootDialog>>(options => {
+                options.Middleware.Add(new MyLoggingMiddleware());
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

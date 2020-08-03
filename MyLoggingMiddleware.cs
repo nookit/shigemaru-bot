@@ -24,7 +24,6 @@ namespace QnABot
             Console.WriteLine("turnContext.Activity.TopicName  : " + turnContext.Activity.TopicName);
             Console.WriteLine("turnContext.Activity.ValueType  : " + turnContext.Activity.ValueType);
             Console.WriteLine("turnContext.Activity.TopicName : " + turnContext.Activity.TopicName);
-            Console.WriteLine("turnContext.Activity.TopicName : " + turnContext.Activity.TopicName);
             Console.WriteLine("turnContext.Activity.ChannelId : " + turnContext.Activity.ChannelId);
             Console.WriteLine("turnContext.Activity.From.Id : " + turnContext.Activity.From.Id);
             Console.WriteLine("turnContext.Activity.From.Name : " + turnContext.Activity.From.Name);

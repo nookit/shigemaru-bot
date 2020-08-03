@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,13 +6,12 @@ using Microsoft.Bot.Schema;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.BotBuilderSamples.Bots;
-using Microsoft.BotBuilderSamples.Dialog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using QnABot;
+using Uls.Shigemaru.Bots;
+using Uls.Shigemaru.Dialog;
 
-namespace Microsoft.BotBuilderSamples
+namespace Uls.Shigemaru
 {
     public class Startup
     {
@@ -66,9 +62,11 @@ namespace Microsoft.BotBuilderSamples
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddBot<QnABot<RootDialog>>(options => {
-                options.Middleware.Add(new MyLoggingMiddleware());
+                options.Middleware.Add(new ContextLogger());
 
             });
+
+            services.AddSingleton<NotificationDialog>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

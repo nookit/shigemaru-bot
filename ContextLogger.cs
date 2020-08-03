@@ -4,11 +4,11 @@ using System.Diagnostics;
 using Microsoft.Bot.Builder;
 using System;
 
-namespace QnABot
+namespace Uls.Shigemaru
 {
-    public class MyLoggingMiddleware : IMiddleware
+    public class ContextLogger : IMiddleware
     {
-        public MyLoggingMiddleware()
+        public ContextLogger()
         {
         }
 

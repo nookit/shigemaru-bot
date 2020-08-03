@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,7 +10,7 @@ using Microsoft.Bot.Builder.Azure;
 using System.Linq;
 using System;
 
-namespace Microsoft.BotBuilderSamples.Bots
+namespace Uls.Shigemaru.Bots
 {
     public class QnABot<T> : ActivityHandler where T : Microsoft.Bot.Builder.Dialogs.Dialog
     {

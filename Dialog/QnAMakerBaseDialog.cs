@@ -8,21 +8,27 @@ using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.AI.QnA.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Configuration;
 
 namespace Uls.Shigemaru.Dialog
 {
     public class QnAMakerBaseDialog : QnAMakerDialog
     {
-        public const string DefaultNoAnswer = "答えが見つかりませんでしたよー";
-        public const string DefaultCardTitle = "Did you mean:";
-        public const string DefaultCardNoMatchText = "None of the above.";
-        public const string DefaultCardNoMatchResponse = "Thanks for the feedback.";
+        // TODO スマートにInjectionできないの？
+        public string _defaultNoAnswer;
+        public string _defaultCardTitle;
+        public string _defaultCardNoMatchText;
+        public string _defaultCardNoMatchResponse ;
 
         private readonly IBotServices _services;
 
-        public QnAMakerBaseDialog(IBotServices services) : base()
+        public QnAMakerBaseDialog(IConfiguration configuration,IBotServices services) : base()
         {
             this._services = services;
+            _defaultNoAnswer = configuration.GetValue<string>("DefaultNoAnswer");
+            _defaultCardTitle = configuration.GetValue<string>("DefaultCardTitle");
+            _defaultCardNoMatchText = configuration.GetValue<string>("DefaultCardNoMatchText");
+            _defaultCardNoMatchResponse = configuration.GetValue<string>("DefaultCardNoMatchResponse");
         }
 
         protected async override Task<IQnAMakerClient> GetQnAMakerClientAsync(DialogContext dc)
@@ -54,15 +60,15 @@ namespace Uls.Shigemaru.Dialog
             viewDialogContext(dc);
 
             var noAnswer = (Activity)Activity.CreateMessageActivity();
-            noAnswer.Text = DefaultNoAnswer;
+            noAnswer.Text = _defaultNoAnswer;
 
-            var cardNoMatchResponse = (Activity)MessageFactory.Text(DefaultCardNoMatchResponse);
+            var cardNoMatchResponse = (Activity)MessageFactory.Text(_defaultCardNoMatchResponse);
 
 
             var responseOptions = new QnADialogResponseOptions
             {
-                ActiveLearningCardTitle = DefaultCardTitle,
-                CardNoMatchText = DefaultCardNoMatchText,
+                ActiveLearningCardTitle = _defaultCardTitle,
+                CardNoMatchText = _defaultCardNoMatchText,
                 NoAnswer = noAnswer,
                 CardNoMatchResponse = cardNoMatchResponse,
             };

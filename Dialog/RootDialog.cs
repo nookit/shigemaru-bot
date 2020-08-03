@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.AI.QnA.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Extensions.Configuration;
 
 namespace Uls.Shigemaru.Dialog
 {
@@ -11,10 +12,10 @@ namespace Uls.Shigemaru.Dialog
     {
         private const string InitialDialog = "initial-dialog";
 
-        public RootDialog(IBotServices services)
+        public RootDialog(IConfiguration configuration,IBotServices services)
             : base("root")
         {
-            AddDialog(new QnAMakerBaseDialog(services));
+            AddDialog(new QnAMakerBaseDialog(configuration,services));
 
             AddDialog(new WaterfallDialog(InitialDialog)
                .AddStep(InitialStepAsync));
